@@ -41,6 +41,5 @@ public class UserEntity {
     private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @Builder.Default
-    private List<WalletEntity> walletsList = new ArrayList<>();
+    private List<WalletEntity> walletsList;
 }

@@ -1,9 +1,7 @@
 package com.trackinvest.account.user.infrastructure.adapter.in.controller;
 
 import com.trackinvest.account.user.application.ports.in.dto.user.GetUserResponseDTO;
-import com.trackinvest.account.user.application.ports.in.dto.user.GetUserProfileResponseDTO;
 import com.trackinvest.account.user.application.ports.in.service.user.GetMePort;
-import com.trackinvest.account.user.application.ports.in.service.user.GetUserProfilePort;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
