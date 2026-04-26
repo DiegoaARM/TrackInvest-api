@@ -8,6 +8,7 @@ import com.trackinvest.account.wallet.application.ports.in.service.CreateWalletP
 import com.trackinvest.account.wallet.application.ports.in.service.UpdateWalletPort;
 import com.trackinvest.account.wallet.application.ports.in.service.UpdateWalletBalancePort;
 import com.trackinvest.account.wallet.application.ports.in.service.DeleteWalletPort;
+import com.trackinvest.account.wallet.application.ports.in.service.GetAllWalletsPort;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
+import java.util.List;
 
 @RestController
 @RequestMapping("/wallets")
@@ -28,6 +30,7 @@ public class WalletController {
     private final UpdateWalletPort updateWalletPort;
     private final UpdateWalletBalancePort updateWalletBalancePort;
     private final DeleteWalletPort deleteWalletPort;
+    private final GetAllWalletsPort getAllWalletsPort;
 
     @PostMapping
     public ResponseEntity<GetWalletResponseDTO> createWallet(
@@ -37,6 +40,15 @@ public class WalletController {
         String cognitoId = jwt.getSubject();
         GetWalletResponseDTO newWallet = createWalletPort.execute(cognitoId, request);
         return new ResponseEntity<>(newWallet, HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<GetWalletResponseDTO>> getAllWallets(
+            @AuthenticationPrincipal Jwt jwt
+    ) {
+        String cognitoId = jwt.getSubject();
+        List<GetWalletResponseDTO> wallets = getAllWalletsPort.execute(cognitoId);
+        return ResponseEntity.ok(wallets);
     }
 
     @PutMapping("/{walletId}")

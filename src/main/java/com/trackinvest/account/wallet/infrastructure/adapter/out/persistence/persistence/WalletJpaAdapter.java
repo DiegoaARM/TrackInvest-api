@@ -7,8 +7,10 @@ import com.trackinvest.account.wallet.infrastructure.adapter.out.persistence.rep
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -40,5 +42,13 @@ public class WalletJpaAdapter implements WalletRepositoryPort {
     @Override
     public void delete(UUID id) {
         walletRepository.deleteById(id);
+    }
+
+    @Override
+    public List<WalletDomain> findByUserId(UUID userId) {
+        return walletRepository.findByUser_Id(userId)
+                .stream()
+                .map(walletEntityMapper::toDomain)
+                .collect(Collectors.toList());
     }
 }
