@@ -5,7 +5,6 @@ import com.trackinvest.account.user.infrastructure.adapter.out.persistence.entit
 import com.trackinvest.account.wallet.infrastructure.adapter.out.persistence.mapper.WalletEntityMapper;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring", uses = {WalletEntityMapper.class})
@@ -22,6 +21,16 @@ public interface UserEntityMapper {
         }
     }
 
-    @Mapping(target = "walletsList", ignore = true)
-    UserDomain toDomain(UserEntity entity);
+    default UserDomain toDomain(UserEntity entity) {
+        if (entity == null) return null;
+
+        return UserDomain.from(
+                entity.getId(),
+                entity.getCognitoId(),
+                entity.getFullname(),
+                entity.getEmail(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt()
+        );
+    }
 }

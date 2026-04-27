@@ -1,7 +1,6 @@
 package com.trackinvest.account.user.domain.models;
 
 import com.trackinvest.account.wallet.domain.models.WalletDomain;
-
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -13,7 +12,7 @@ public class UserDomain {
     private final String email;
     private final LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private List<WalletDomain> walletsList;
+    final private List<WalletDomain> walletsList;
 
     private UserDomain(UUID id, String cognitoId, String fullname, String email, LocalDateTime createdAt, LocalDateTime updatedAt, List<WalletDomain> walletsList) {
         this.id = Objects.requireNonNull(id, "ID is mandatory");

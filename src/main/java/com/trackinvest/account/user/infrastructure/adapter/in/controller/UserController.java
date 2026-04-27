@@ -18,19 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final GetMePort getMePort;
-    private final GetUserProfilePort getUserProfilePort;
 
     @GetMapping("/me")
     public ResponseEntity<GetUserResponseDTO> getMe(@AuthenticationPrincipal Jwt jwt) {
         String cognitoId = jwt.getSubject();
         GetUserResponseDTO userDTO = getMePort.execute(cognitoId);
         return ResponseEntity.ok(userDTO);
-    }
-
-    @GetMapping("/me/profile")
-    public ResponseEntity<GetUserProfileResponseDTO> getUserProfile(@AuthenticationPrincipal Jwt jwt) {
-        String cognitoId = jwt.getSubject();
-        GetUserProfileResponseDTO profileDTO = getUserProfilePort.execute(cognitoId);
-        return ResponseEntity.ok(profileDTO);
     }
 }
