@@ -23,24 +23,22 @@ public class CreateWalletUseCase implements CreateWalletPort {
     private final WalletRepositoryPort walletRepository;
 
     @Override
-    public GetWalletResponseDTO execute(String cognitoId, CreateWalletRequestDTO wallet) {
-        UserDomain user = userRepository.findByCognitoId(cognitoId)
-                .orElseThrow(UserNotFoundException::new);
+    public GetWalletResponseDTO execute(UUID userId, CreateWalletRequestDTO wallet) {
+//        UserDomain user = userRepository.findByIdWithWallets(userId)
+//                .orElseThrow(UserNotFoundException::new);
 
         WalletNameValidRule.validate(wallet.name());
 
-        if (walletRepository.existsByNameAndUserId(wallet.name(), user.getId())) {
+        if (walletRepository.existsByNameAndUserId(wallet.name(), userId)) {
             throw new WalletNameDuplicateException();
         }
 
         WalletDomain walletDomain = WalletDomain.create(
                 UUID.randomUUID(),
                 wallet.name(),
-                user,
+                userId,
                 wallet.currency()
         );
-        // 3. LA AÑADIMOS al usuario (Para que pase sus validaciones)
-        user.addWallet(walletDomain);
 
         WalletDomain savedWallet = walletRepository.save(walletDomain);
         return GetWalletResponseDTO.fromDomain(savedWallet);

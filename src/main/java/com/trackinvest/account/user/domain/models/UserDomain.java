@@ -24,6 +24,16 @@ public class UserDomain {
         this.walletsList = Objects.requireNonNull(walletsList, "wallets is mandatory");
     }
 
+    private UserDomain(UUID id) {
+        this.id = Objects.requireNonNull(id, "ID is mandatory");
+        this.cognitoId = null;
+        this.fullname = null;
+        this.email = null;
+        this.createdAt = null;
+        this.updatedAt = null;
+        this.walletsList = new ArrayList<>();
+    }
+
     public static UserDomain create(UUID id, String cognitoId, String fullname, String email, List<WalletDomain> walletsList) {
         LocalDateTime now = LocalDateTime.now();
         return new UserDomain(id, cognitoId, fullname, email, now, now, walletsList);
@@ -32,6 +42,10 @@ public class UserDomain {
     public static UserDomain create(UUID id, String cognitoId, String fullname, String email) {
         LocalDateTime now = LocalDateTime.now();
         return new UserDomain(id, cognitoId, fullname, email, now, now, new ArrayList<>());
+    }
+
+    public static UserDomain create(UUID id) {
+        return new UserDomain(id);
     }
 
     public static UserDomain from(UUID id, String cognitoId, String fullname, String email, LocalDateTime createdAt, LocalDateTime updatedAt, List<WalletDomain> walletsList) {

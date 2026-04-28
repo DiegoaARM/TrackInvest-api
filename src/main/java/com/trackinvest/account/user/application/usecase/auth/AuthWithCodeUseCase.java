@@ -26,6 +26,10 @@ public class AuthWithCodeUseCase implements AuthWithCodePort {
         String email = jwt.getClaim("email").asString();
         String fullName = jwt.getClaim("name").asString();
 
+        System.out.println("Cognito ID: " + cognitoId);
+        System.out.println("Email: " + email);
+        System.out.println("Full Name: " + fullName);
+
         syncUserPort.execute(cognitoId, email, fullName);
 
         return new TokenDTO(idToken);

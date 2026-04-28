@@ -34,52 +34,47 @@ public class WalletController {
 
     @PostMapping
     public ResponseEntity<GetWalletResponseDTO> createWallet(
-            @AuthenticationPrincipal Jwt jwt,
+            @RequestAttribute("USER_ID") UUID userId,
             @Valid @RequestBody CreateWalletRequestDTO request
     ) {
-        String cognitoId = jwt.getSubject();
-        GetWalletResponseDTO newWallet = createWalletPort.execute(cognitoId, request);
+        GetWalletResponseDTO newWallet = createWalletPort.execute(userId, request);
         return new ResponseEntity<>(newWallet, HttpStatus.CREATED);
     }
 
     @GetMapping
     public ResponseEntity<List<GetWalletResponseDTO>> getAllWallets(
-            @AuthenticationPrincipal Jwt jwt
+            @RequestAttribute("USER_ID") UUID userId
     ) {
-        String cognitoId = jwt.getSubject();
-        List<GetWalletResponseDTO> wallets = getAllWalletsPort.execute(cognitoId);
+        List<GetWalletResponseDTO> wallets = getAllWalletsPort.execute(userId);
         return ResponseEntity.ok(wallets);
     }
 
     @PutMapping("/{walletId}")
     public ResponseEntity<GetWalletResponseDTO> updateWallet(
+            @RequestAttribute("USER_ID") UUID userId,
             @PathVariable UUID walletId,
-            @Valid @RequestBody UpdateWalletRequestDTO request,
-            @AuthenticationPrincipal Jwt jwt
+            @Valid @RequestBody UpdateWalletRequestDTO request
     ) {
-        String cognitoId = jwt.getSubject();
-        GetWalletResponseDTO updatedWallet = updateWalletPort.execute(cognitoId, walletId, request);
+        GetWalletResponseDTO updatedWallet = updateWalletPort.execute(userId, walletId, request);
         return ResponseEntity.ok(updatedWallet);
     }
 
     @PutMapping("/{walletId}/balance")
     public ResponseEntity<GetWalletResponseDTO> updateWalletBalance(
+            @RequestAttribute("USER_ID") UUID userId,
             @PathVariable UUID walletId,
-            @Valid @RequestBody UpdateWalletBalanceRequestDTO request,
-            @AuthenticationPrincipal Jwt jwt
+            @Valid @RequestBody UpdateWalletBalanceRequestDTO request
     ) {
-        String cognitoId = jwt.getSubject();
-        GetWalletResponseDTO updatedWallet = updateWalletBalancePort.execute(cognitoId, walletId, request);
+        GetWalletResponseDTO updatedWallet = updateWalletBalancePort.execute(userId, walletId, request);
         return ResponseEntity.ok(updatedWallet);
     }
 
     @DeleteMapping("/{walletId}")
     public ResponseEntity<Void> deleteWallet(
-            @PathVariable UUID walletId,
-            @AuthenticationPrincipal Jwt jwt
+            @RequestAttribute("USER_ID") UUID userId,
+            @PathVariable UUID walletId
     ) {
-        String cognitoId = jwt.getSubject();
-        deleteWalletPort.execute(cognitoId, walletId);
+        deleteWalletPort.execute(userId, walletId);
         return ResponseEntity.noContent().build();
     }
 }

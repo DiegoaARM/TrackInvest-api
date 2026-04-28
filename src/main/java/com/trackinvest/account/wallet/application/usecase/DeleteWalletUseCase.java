@@ -17,7 +17,7 @@ public class DeleteWalletUseCase implements DeleteWalletPort {
     private final WalletRepositoryPort walletRepository;
 
     @Override
-    public void execute(String cognitoId, UUID walletId) {
+    public void execute(UUID userId, UUID walletId) {
 
         WalletDomain wallet = walletRepository.findById(walletId)
                 .orElseThrow(WalletNotFoundException::new);

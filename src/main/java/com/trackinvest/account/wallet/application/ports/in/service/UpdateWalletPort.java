@@ -6,5 +6,5 @@ import com.trackinvest.account.wallet.application.ports.in.dto.UpdateWalletReque
 import java.util.UUID;
 
 public interface UpdateWalletPort {
-    GetWalletResponseDTO execute(String cognitoId, UUID walletId, UpdateWalletRequestDTO request);
+    GetWalletResponseDTO execute(UUID userId, UUID walletId, UpdateWalletRequestDTO request);
 }
