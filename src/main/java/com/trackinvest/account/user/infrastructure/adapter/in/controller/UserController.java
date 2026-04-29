@@ -8,8 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/users")
@@ -20,9 +23,10 @@ public class UserController {
     private final GetMePort getMePort;
 
     @GetMapping("/me")
-    public ResponseEntity<GetUserResponseDTO> getMe(@AuthenticationPrincipal Jwt jwt) {
-        String cognitoId = jwt.getSubject();
-        GetUserResponseDTO userDTO = getMePort.execute(cognitoId);
+    public ResponseEntity<GetUserResponseDTO> getMe(
+            @RequestAttribute("USER_ID") UUID userId
+    ) {
+        GetUserResponseDTO userDTO = getMePort.execute(userId);
         return ResponseEntity.ok(userDTO);
     }
 }
