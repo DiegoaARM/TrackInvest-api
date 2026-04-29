@@ -32,7 +32,7 @@ public class SyncUserUseCase implements SyncUserPort {
         WalletDomain initialWallet = WalletDomain.create(
                 UUID.randomUUID(),
                 "Initial Wallet",
-                newUser,
+                newUser.getId(),
                 CurrencyTypeEnum.USD //initial currency
         );
 

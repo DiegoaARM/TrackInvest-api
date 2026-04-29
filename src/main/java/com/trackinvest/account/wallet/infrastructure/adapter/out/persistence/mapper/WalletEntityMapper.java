@@ -5,12 +5,14 @@ import com.trackinvest.account.wallet.infrastructure.adapter.out.persistence.ent
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface WalletEntityMapper {
 
     @Mapping(target = "user", ignore = true)
     WalletDomain toDomain(WalletEntity entity);
 
-    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "user.walletsList", ignore = true)
     WalletEntity toEntity(WalletDomain domain);
 }

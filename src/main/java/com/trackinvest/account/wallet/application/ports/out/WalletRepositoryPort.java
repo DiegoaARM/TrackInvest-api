@@ -2,6 +2,7 @@ package com.trackinvest.account.wallet.application.ports.out;
 
 import com.trackinvest.account.wallet.domain.models.WalletDomain;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -14,4 +15,6 @@ public interface WalletRepositoryPort {
     boolean existsByNameAndUserId(String name, UUID userId);
 
     void delete(UUID id);
+
+    List<WalletDomain> findByUserId(UUID userId);
 }

@@ -1,5 +1,7 @@
 package com.trackinvest.account.wallet.application.ports.in.service;
 
+import java.util.UUID;
+
 public interface DeleteWalletPort {
-    void execute(String cognitoId, java.util.UUID walletId);
+    void execute(UUID userId, UUID walletId);
 }

@@ -25,6 +25,12 @@ public class UserJpaAdapter implements UserRepositoryPort {
     }
 
     @Override
+    public Optional<UserDomain> findByIdWithWallets(UUID id) {
+        return userRepository.findByIdWithWallets(id)
+                .map(userEntityMapper::toDomain);
+    }
+
+    @Override
     public Optional<UserDomain> findByEmail(String email) {
         return userRepository.findByEmail(email)
                 .map(userEntityMapper::toDomain);

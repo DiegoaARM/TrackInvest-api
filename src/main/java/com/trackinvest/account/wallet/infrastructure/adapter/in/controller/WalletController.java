@@ -8,6 +8,7 @@ import com.trackinvest.account.wallet.application.ports.in.service.CreateWalletP
 import com.trackinvest.account.wallet.application.ports.in.service.UpdateWalletPort;
 import com.trackinvest.account.wallet.application.ports.in.service.UpdateWalletBalancePort;
 import com.trackinvest.account.wallet.application.ports.in.service.DeleteWalletPort;
+import com.trackinvest.account.wallet.application.ports.in.service.GetAllWalletsPort;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
+import java.util.List;
 
 @RestController
 @RequestMapping("/wallets")
@@ -28,46 +30,51 @@ public class WalletController {
     private final UpdateWalletPort updateWalletPort;
     private final UpdateWalletBalancePort updateWalletBalancePort;
     private final DeleteWalletPort deleteWalletPort;
+    private final GetAllWalletsPort getAllWalletsPort;
 
     @PostMapping
     public ResponseEntity<GetWalletResponseDTO> createWallet(
-            @AuthenticationPrincipal Jwt jwt,
+            @RequestAttribute("USER_ID") UUID userId,
             @Valid @RequestBody CreateWalletRequestDTO request
     ) {
-        String cognitoId = jwt.getSubject();
-        GetWalletResponseDTO newWallet = createWalletPort.execute(cognitoId, request);
+        GetWalletResponseDTO newWallet = createWalletPort.execute(userId, request);
         return new ResponseEntity<>(newWallet, HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<GetWalletResponseDTO>> getAllWallets(
+            @RequestAttribute("USER_ID") UUID userId
+    ) {
+        List<GetWalletResponseDTO> wallets = getAllWalletsPort.execute(userId);
+        return ResponseEntity.ok(wallets);
     }
 
     @PutMapping("/{walletId}")
     public ResponseEntity<GetWalletResponseDTO> updateWallet(
+            @RequestAttribute("USER_ID") UUID userId,
             @PathVariable UUID walletId,
-            @Valid @RequestBody UpdateWalletRequestDTO request,
-            @AuthenticationPrincipal Jwt jwt
+            @Valid @RequestBody UpdateWalletRequestDTO request
     ) {
-        String cognitoId = jwt.getSubject();
-        GetWalletResponseDTO updatedWallet = updateWalletPort.execute(cognitoId, walletId, request);
+        GetWalletResponseDTO updatedWallet = updateWalletPort.execute(userId, walletId, request);
         return ResponseEntity.ok(updatedWallet);
     }
 
     @PutMapping("/{walletId}/balance")
     public ResponseEntity<GetWalletResponseDTO> updateWalletBalance(
+            @RequestAttribute("USER_ID") UUID userId,
             @PathVariable UUID walletId,
-            @Valid @RequestBody UpdateWalletBalanceRequestDTO request,
-            @AuthenticationPrincipal Jwt jwt
+            @Valid @RequestBody UpdateWalletBalanceRequestDTO request
     ) {
-        String cognitoId = jwt.getSubject();
-        GetWalletResponseDTO updatedWallet = updateWalletBalancePort.execute(cognitoId, walletId, request);
+        GetWalletResponseDTO updatedWallet = updateWalletBalancePort.execute(userId, walletId, request);
         return ResponseEntity.ok(updatedWallet);
     }
 
     @DeleteMapping("/{walletId}")
     public ResponseEntity<Void> deleteWallet(
-            @PathVariable UUID walletId,
-            @AuthenticationPrincipal Jwt jwt
+            @RequestAttribute("USER_ID") UUID userId,
+            @PathVariable UUID walletId
     ) {
-        String cognitoId = jwt.getSubject();
-        deleteWalletPort.execute(cognitoId, walletId);
+        deleteWalletPort.execute(userId, walletId);
         return ResponseEntity.noContent().build();
     }
 }

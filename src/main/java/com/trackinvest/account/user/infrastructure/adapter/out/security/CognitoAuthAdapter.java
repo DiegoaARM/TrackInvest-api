@@ -1,6 +1,6 @@
 package com.trackinvest.account.user.infrastructure.adapter.out.security;
 
-import com.trackinvest.account.user.application.ports.in.dto.auth.CognitoTokenResponseDTO;
+import com.trackinvest.account.user.application.ports.in.dto.auth.TokenDTO;
 import com.trackinvest.account.user.application.ports.out.IdentityProviderPort;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -39,7 +39,7 @@ public class CognitoAuthAdapter implements IdentityProviderPort {
     }
 
     @Override
-    public String exchangeCodeForToken(String code) {
+    public TokenDTO exchangeCodeForToken(String code) {
         String urlStr = cognitoUri +
                 "/oauth2/token?" +
                 "grant_type=authorization_code" +
@@ -65,9 +65,7 @@ public class CognitoAuthAdapter implements IdentityProviderPort {
         HttpResponse<String> response;
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
 
@@ -75,7 +73,38 @@ public class CognitoAuthAdapter implements IdentityProviderPort {
             throw new RuntimeException("Authentication failed. Error: " + response.body());
         }
 
-        CognitoTokenResponseDTO token = MAPPER.readValue(response.body(), CognitoTokenResponseDTO.class);
-        return token.id_token();
+        return MAPPER.readValue(response.body(), TokenDTO.class);
+    }
+
+    @Override
+    public TokenDTO refreshTokens(String refreshToken) {
+        String urlStr = cognitoUri +
+                "/oauth2/token?" +
+                "grant_type=refresh_token" +
+                "&client_id=" + clientId +
+                "&refresh_token=" + refreshToken;
+
+        String authInfo = clientId + ":" + clientSecret;
+        String basicAuth = Base64.getEncoder().encodeToString(authInfo.getBytes());
+
+        try {
+            HttpRequest request = HttpRequest.newBuilder(new URI(urlStr))
+                    .header("Content-Type", "application/x-www-form-urlencoded")
+                    .header("Authorization", "Basic " + basicAuth)
+                    .POST(HttpRequest.BodyPublishers.noBody())
+                    .build();
+
+            HttpClient client = HttpClient.newHttpClient();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() != 200) {
+                throw new RuntimeException("Refresh failed. Error: " + response.body());
+            }
+
+            return MAPPER.readValue(response.body(), TokenDTO.class);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error during token refresh", e);
+        }
     }
 }
