@@ -1,17 +1,18 @@
 package com.trackinvest.account.user.infrastructure.adapter.in.controller;
 
 import com.trackinvest.account.user.application.ports.in.dto.user.GetUserResponseDTO;
-import com.trackinvest.account.user.application.ports.in.dto.user.GetUserProfileResponseDTO;
 import com.trackinvest.account.user.application.ports.in.service.user.GetMePort;
-import com.trackinvest.account.user.application.ports.in.service.user.GetUserProfilePort;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/users")
@@ -20,19 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final GetMePort getMePort;
-    private final GetUserProfilePort getUserProfilePort;
 
     @GetMapping("/me")
-    public ResponseEntity<GetUserResponseDTO> getMe(@AuthenticationPrincipal Jwt jwt) {
-        String cognitoId = jwt.getSubject();
-        GetUserResponseDTO userDTO = getMePort.execute(cognitoId);
+    public ResponseEntity<GetUserResponseDTO> getMe(
+            @RequestAttribute("USER_ID") UUID userId
+    ) {
+        GetUserResponseDTO userDTO = getMePort.execute(userId);
         return ResponseEntity.ok(userDTO);
-    }
-
-    @GetMapping("/me/profile")
-    public ResponseEntity<GetUserProfileResponseDTO> getUserProfile(@AuthenticationPrincipal Jwt jwt) {
-        String cognitoId = jwt.getSubject();
-        GetUserProfileResponseDTO profileDTO = getUserProfilePort.execute(cognitoId);
-        return ResponseEntity.ok(profileDTO);
     }
 }

@@ -18,8 +18,9 @@ public class AuthWithCodeUseCase implements AuthWithCodePort {
 
     @Override
     public TokenDTO execute(String code) {
-        String idToken = identityProvider.exchangeCodeForToken(code);
+        TokenDTO token = identityProvider.exchangeCodeForToken(code);
 
+        String idToken = token.id_token();
         DecodedJWT jwt = JWT.decode(idToken);
 
         String cognitoId = jwt.getSubject(); // El 'sub'
@@ -32,6 +33,6 @@ public class AuthWithCodeUseCase implements AuthWithCodePort {
 
         syncUserPort.execute(cognitoId, email, fullName);
 
-        return new TokenDTO(idToken);
+        return token;
     }
 }

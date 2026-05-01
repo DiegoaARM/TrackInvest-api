@@ -20,7 +20,7 @@ public class UpdateWalletUseCase implements UpdateWalletPort {
     private final WalletRepositoryPort walletRepository;
 
     @Override
-    public GetWalletResponseDTO execute(String cognitoId, UUID walletId, UpdateWalletRequestDTO request) {
+    public GetWalletResponseDTO execute(UUID userId, UUID walletId, UpdateWalletRequestDTO request) {
 
         WalletDomain wallet = walletRepository.findById(walletId)
                 .orElseThrow(WalletNotFoundException::new);

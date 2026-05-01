@@ -7,6 +7,8 @@ import com.trackinvest.account.user.domain.exception.business.UserNotFoundExcept
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class GetMeUseCase implements GetMePort {
@@ -14,8 +16,8 @@ public class GetMeUseCase implements GetMePort {
     private final UserRepositoryPort userRepository;
 
     @Override
-    public GetUserResponseDTO execute(String cognitoId) {
-        return userRepository.findByCognitoId(cognitoId)
+    public GetUserResponseDTO execute(UUID userId) {
+        return userRepository.findById(userId)
                 .map(GetUserResponseDTO::fromDomain)
                 .orElseThrow(UserNotFoundException::new);
     }

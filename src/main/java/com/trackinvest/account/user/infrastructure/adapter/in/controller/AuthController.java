@@ -1,9 +1,11 @@
 package com.trackinvest.account.user.infrastructure.adapter.in.controller;
 
+import com.trackinvest.account.user.application.ports.in.dto.auth.RefreshTokenRequestDTO;
 import com.trackinvest.account.user.application.ports.in.dto.auth.TokenDTO;
 import com.trackinvest.account.user.application.ports.in.dto.auth.UrlDTO;
 import com.trackinvest.account.user.application.ports.in.service.auth.AuthWithCodePort;
 import com.trackinvest.account.user.application.ports.in.service.auth.GenerateAuthUrlPort;
+import com.trackinvest.account.user.application.ports.in.service.auth.RefreshTokenPort;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ public class AuthController {
 
     private final GenerateAuthUrlPort generateAuthUrlPort;
     private final AuthWithCodePort authWithCodePort;
+    private final RefreshTokenPort refreshTokenPort;
 
     @GetMapping("/url")
     public ResponseEntity<UrlDTO> url() {
@@ -24,7 +27,15 @@ public class AuthController {
     }
 
     @GetMapping("/callback")
-    public ResponseEntity<TokenDTO> callback(@RequestParam("code") String code) {
+    public ResponseEntity<TokenDTO> callback(
+            @RequestParam("code") String code) {
         return ResponseEntity.ok(authWithCodePort.execute(code));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<TokenDTO> refresh(
+            @RequestBody RefreshTokenRequestDTO request) {
+        TokenDTO newTokens = refreshTokenPort.execute(request.refreshToken());
+        return ResponseEntity.ok(newTokens);
     }
 }
