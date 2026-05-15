@@ -1,5 +1,6 @@
 package com.trackinvest.account.user.domain.rules;
 
+import com.trackinvest.account.common.domain.rules.DomainRule;
 import com.trackinvest.account.user.domain.exception.format.UserNameInvalidException;
 import org.springframework.stereotype.Service;
 
