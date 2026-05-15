@@ -1,5 +1,6 @@
 package com.trackinvest.account.user.domain.models;
 
+import com.trackinvest.account.user.domain.rules.UserNameValidRule;
 import com.trackinvest.account.wallet.domain.models.WalletDomain;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -57,6 +58,7 @@ public class UserDomain {
     }
 
     public void changeFullname(String newfullname) {
+        UserNameValidRule.validate(newfullname);
         this.fullname = Objects.requireNonNull(newfullname, "New fullname cannot be null");
         this.updatedAt = LocalDateTime.now();
     }
