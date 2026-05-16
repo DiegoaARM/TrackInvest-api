@@ -1,5 +1,6 @@
 package com.trackinvest.account.user.infrastructure.adapter.in.controller;
 
+import com.trackinvest.account.common.application.dto.ApiResponse;
 import com.trackinvest.account.user.application.ports.in.dto.auth.RefreshTokenRequestDTO;
 import com.trackinvest.account.user.application.ports.in.dto.auth.TokenDTO;
 import com.trackinvest.account.user.application.ports.in.dto.auth.UrlDTO;
@@ -22,20 +23,20 @@ public class AuthController {
     private final RefreshTokenPort refreshTokenPort;
 
     @GetMapping("/url")
-    public ResponseEntity<UrlDTO> url() {
-        return ResponseEntity.ok(generateAuthUrlPort.execute());
+    public ResponseEntity<ApiResponse<UrlDTO>> url() {
+        return ResponseEntity.ok(ApiResponse.success(generateAuthUrlPort.execute(), "Authorization URL generated successfully"));
     }
 
     @GetMapping("/callback")
-    public ResponseEntity<TokenDTO> callback(
+    public ResponseEntity<ApiResponse<TokenDTO>> callback(
             @RequestParam("code") String code) {
-        return ResponseEntity.ok(authWithCodePort.execute(code));
+        return ResponseEntity.ok(ApiResponse.success(authWithCodePort.execute(code), "Authentication successful"));
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<TokenDTO> refresh(
+    public ResponseEntity<ApiResponse<TokenDTO>> refresh(
             @RequestBody RefreshTokenRequestDTO request) {
         TokenDTO newTokens = refreshTokenPort.execute(request.refreshToken());
-        return ResponseEntity.ok(newTokens);
+        return ResponseEntity.ok(ApiResponse.success(newTokens, "Tokens refreshed successfully"));
     }
 }
