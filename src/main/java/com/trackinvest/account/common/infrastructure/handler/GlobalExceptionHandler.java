@@ -1,20 +1,21 @@
-//package com.backend.trackinvest.usuarios.infrastructure.adapter.in.handler;
-//
-//import com.backend.trackinvest.usuarios.domain.exception.format.NameInvalidException;
-//import org.springframework.http.HttpStatus;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.web.bind.annotation.ExceptionHandler;
-//import org.springframework.web.bind.annotation.RestControllerAdvice;
-//
-//import java.util.Map;
-//
-//@RestControllerAdvice
-//public class GlobalExceptionHandler {
-//
-//    @ExceptionHandler(NameInvalidException.class)
-//    public ResponseEntity<Map<String, String>> handleNameInvalid(NameInvalidException ex) {
-//        return ResponseEntity
-//                .status(HttpStatus.BAD_REQUEST)
-//                .body(Map.of("error", ex.getMessage()));
-//    }
-//}
+package com.trackinvest.account.common.infrastructure.handler;
+
+import com.trackinvest.account.common.application.dto.ApiResponse;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+@RestControllerAdvice
+@Order(Ordered.LOWEST_PRECEDENCE)
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiResponse<Void>> handleAnyError(Exception ex) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ApiResponse.error("An unexpected error occurred", null));
+    }
+}

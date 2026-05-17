@@ -8,6 +8,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class ChangeNameUseCase implements ChangeNamePort {
@@ -16,8 +18,10 @@ public class ChangeNameUseCase implements ChangeNamePort {
 
     @Override
     @Transactional
-    public void changeName(String cognitoId, String newFullName) {
-        UserDomain user = userRepository.findByCognitoId(cognitoId)
+    public void changeName(UUID id, String newFullName) {
+        UserDomain user = userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
+        user.changeFullname(newFullName);
+        userRepository.save(user);
     }
 }
