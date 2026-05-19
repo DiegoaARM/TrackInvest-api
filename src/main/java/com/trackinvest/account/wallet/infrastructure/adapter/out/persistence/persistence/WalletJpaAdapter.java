@@ -51,4 +51,9 @@ public class WalletJpaAdapter implements WalletRepositoryPort {
                 .map(walletEntityMapper::toDomain)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public long countByUserId(UUID userId) {
+        return walletRepository.countByUser_Id(userId);
+    }
 }
