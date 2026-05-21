@@ -1,7 +1,7 @@
 package com.trackinvest.account.wallet.infrastructure.handler;
 
 import com.trackinvest.account.common.application.dto.ApiResponse;
-import com.trackinvest.account.wallet.domain.exception.business.WalletNotFoundException;
+import com.trackinvest.account.wallet.domain.exception.business.*;
 import com.trackinvest.account.wallet.domain.exception.format.WalletNameInvalidException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -22,7 +22,42 @@ public class WalletExceptionHandler {
     }
 
     @ExceptionHandler(WalletNameInvalidException.class)
-    public ResponseEntity<ApiResponse<Void>> WalletNameInvalid(WalletNameInvalidException ex) {
+    public ResponseEntity<ApiResponse<Void>> handleWalletNameInvalid(WalletNameInvalidException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.error(ex.getMessage(), null));
+    }
+
+    @ExceptionHandler(WalletCannotDeleteLastException.class)
+    public ResponseEntity<ApiResponse<Void>> handleWalletCannotDeleteLast(WalletCannotDeleteLastException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.error(ex.getMessage(), null));
+    }
+
+    @ExceptionHandler(WalletInsufficientBalanceException.class)
+    public ResponseEntity<ApiResponse<Void>> handleWalletInsufficientBalance(WalletInsufficientBalanceException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.error(ex.getMessage(), null));
+    }
+
+    @ExceptionHandler(WalletInvalidBalanceException.class)
+    public ResponseEntity<ApiResponse<Void>> handleWalletInvalidBalance(WalletInvalidBalanceException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.error(ex.getMessage(), null));
+    }
+
+    @ExceptionHandler(WalletMaxNumberException.class)
+    public ResponseEntity<ApiResponse<Void>> handleWalletMaxNumber(WalletMaxNumberException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.error(ex.getMessage(), null));
+    }
+
+    @ExceptionHandler(WalletNameDuplicateException.class)
+    public ResponseEntity<ApiResponse<Void>> handleWalletNameDuplicate(WalletNameDuplicateException ex) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ApiResponse.error(ex.getMessage(), null));

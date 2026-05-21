@@ -4,8 +4,8 @@ import com.trackinvest.account.wallet.application.ports.in.dto.GetWalletResponse
 import com.trackinvest.account.wallet.application.ports.in.dto.UpdateWalletBalanceRequestDTO;
 import com.trackinvest.account.wallet.application.ports.in.service.UpdateWalletBalancePort;
 import com.trackinvest.account.wallet.application.ports.out.WalletRepositoryPort;
-import com.trackinvest.account.wallet.domain.exception.business.InvalidBalanceException;
-import com.trackinvest.account.wallet.domain.exception.business.InsufficientBalanceException;
+import com.trackinvest.account.wallet.domain.exception.business.WalletInvalidBalanceException;
+import com.trackinvest.account.wallet.domain.exception.business.WalletInsufficientBalanceException;
 import com.trackinvest.account.wallet.domain.exception.business.WalletNotFoundException;
 import com.trackinvest.account.wallet.domain.models.WalletDomain;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ public class UpdateWalletBalanceUseCase implements UpdateWalletBalancePort {
             newBalance = wallet.getBalance().add(request.amount());
         } else {
             if (wallet.getBalance().compareTo(request.amount()) < 0) {
-                throw new InsufficientBalanceException();
+                throw new WalletInsufficientBalanceException();
             }
             newBalance = wallet.getBalance().subtract(request.amount());
         }
@@ -45,7 +45,7 @@ public class UpdateWalletBalanceUseCase implements UpdateWalletBalancePort {
 
     private void validateAmount(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new InvalidBalanceException();
+            throw new WalletInvalidBalanceException();
         }
     }
 }
